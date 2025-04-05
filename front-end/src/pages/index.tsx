@@ -92,12 +92,12 @@ export default function IndexPage() {
                   >
                     <img
                       src={
-                        'https://app.nango.dev/images/template-logos/slack.svg'
+                        'https://app.nango.dev/images/template-logos/hubspot.svg'
                       }
                       alt=""
                       className="w-5"
                     />
-                    Import from Slack
+                    Import from Hubspot
                   </button>
                   <div className="text-red-500 text-xs text-center mt-1">
                     <Link href="https://app.nango.dev/dev/integrations">
