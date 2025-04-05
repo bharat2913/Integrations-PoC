@@ -110,7 +110,7 @@ export default function IndexPage() {
           </div>
         </div>
         {connectedTo && (
-          <div className="mt-8 rounded-lg bg-white px-4 py-5 shadow sm:px-6">
+          <div className="w-[540px] mx-auto mt-8 rounded-lg bg-white px-4 py-5 shadow sm:px-6">
             <h2 className="text-lg font-medium leading-6 text-gray-900">
               HubSpot Tasks
             </h2>
