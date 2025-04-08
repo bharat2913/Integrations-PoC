@@ -49,7 +49,11 @@ The sample app uses Hubspot as an example integration.
     - Copy your Nango Secret Key, found in [Environment Settings](https://app.nango.dev/dev/environment-settings?source=sample-app).
     - Create a file to store environment variables and fill in the Nango Secret Key:
     ```sh
-    cp .env.example .env
+    cp .env.example .env && cd front-end && cp .env.example .env
+    ```
+    - Generate encryption key and fill in NANGO_ENCRYPTION_KEY
+    ```
+    openssl rand -base64 32
     ```
 4. ### Transfer Nango webhooks locally
     - This command should be running at all time:
