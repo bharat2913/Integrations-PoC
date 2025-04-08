@@ -14,10 +14,8 @@ The sample app uses Hubspot as an example integration.
 
 ### Run the sample app
 
-1. ### Create an Account
-    - Go to [nango.dev](https://app.nango.dev?source=sample-app) and create an account (free).
 
-2. ### Create a Hubspot integration
+1. ### Create a Hubspot integration
     1.  Create a developer account
         - Go to [Hubspot's developer signup page](https://app.hubspot.com/signup-hubspot/developers) and create an account. 
     2. Create & configure a Hubspot app
@@ -35,7 +33,7 @@ The sample app uses Hubspot as an example integration.
     5. Next
         - Go back to Nango. In the "Integrations" tab, add `Client ID` and `Client secret` in the Hubspot integration in the `Settings` tab. 
     
-3. ### Prepare your env
+2. ### Prepare your env
     - Install: `NodeJS`, `Docker`. Then run:
 
     ```sh
@@ -45,8 +43,9 @@ The sample app uses Hubspot as an example integration.
 
     nvm use
     npm i
+    docker-compose up -d
     ```
-    - Copy your Nango Secret Key, found in [Environment Settings](https://app.nango.dev/dev/environment-settings?source=sample-app).
+    - Copy your Nango Secret Key, found in [Environment Settings](http://localhost:3003/dev/environment-settings?source=sample-app).
     - Create a file to store environment variables and fill in the Nango Secret Key:
     ```sh
     cp .env.example .env && cd front-end && cp .env.example .env
@@ -55,7 +54,7 @@ The sample app uses Hubspot as an example integration.
     ```
     openssl rand -base64 32
     ```
-4. ### Transfer Nango webhooks locally
+3. ### Transfer Nango webhooks locally
     - This command should be running at all time:
 
     ```sh
@@ -63,10 +62,11 @@ The sample app uses Hubspot as an example integration.
     ```
 
     - Copy the URL the command gave you and go to Environment Settings. Set Webhook URL to ${URL}/webhooks-from-nango, e.g: https://tame-socks-warn.loca.lt/webhooks-from-nango.
-5. ### Launch
+4. ### Launch
     - Run:
     ```sh
     npm run start
     ```
     - Go to: [http://localhost:3011](http://localhost:3011)
+    - Go to: [http://localhost:3003](http://localhost:3003) for Nango's Dashboard
 
