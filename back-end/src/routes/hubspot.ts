@@ -1,7 +1,8 @@
-import { Client } from '@hubspot/api-client';
 import type { RouteHandler } from 'fastify';
 import { nango } from '../nango.js';
 import { getUserFromDatabase } from '../db.js';
+import { HubSpotClientWrapper } from '../rate-limit/HubSpotClientWrapper.js';
+import { RateLimitError } from '../rate-limit/RateLimitError.js';
 
 // Define the shape of Nango OAuth2 credentials
 interface OAuth2Credentials {
@@ -61,16 +62,13 @@ export const createTask: RouteHandler<{
   try {
     // Get HubSpot connection
     const connection = await nango.getConnection('hubspot', user.connectionId);
-
     const credentials = connection.credentials as unknown as OAuth2Credentials;
 
-    // Initialize HubSpot client with the access token
-    const hubspotClient = new Client({
-      accessToken: credentials.access_token,
-    }) as any;
+    // Initialize HubSpot client with rate limiting
+    const hubspotClient = new HubSpotClientWrapper(credentials.access_token);
 
     // Create task
-    const task = await hubspotClient.crm.objects.tasks.basicApi.create({
+    const task = await hubspotClient.crmTasksCreate({
       properties: {
         hs_task_subject: request.body.subject,
         hs_task_body: request.body.body,
@@ -102,7 +100,9 @@ export const createTask: RouteHandler<{
 };
 
 export const getHubspotContacts: RouteHandler<{
-  Reply: HubSpotContact[] | { error: string };
+  Reply:
+    | HubSpotContact[]
+    | { error: string; retryAfter?: number; message?: string };
 }> = async (_, reply) => {
   const user = await getUserFromDatabase();
   if (!user || !user.connectionId) {
@@ -113,16 +113,13 @@ export const getHubspotContacts: RouteHandler<{
   try {
     // Get HubSpot connection
     const connection = await nango.getConnection('hubspot', user.connectionId);
-
     const credentials = connection.credentials as unknown as OAuth2Credentials;
 
-    // Initialize HubSpot client with the access token
-    const hubspotClient = new Client({
-      accessToken: credentials.access_token,
-    });
+    // Initialize HubSpot client with rate limiting
+    const hubspotClient = new HubSpotClientWrapper(credentials.access_token);
 
     // Get contacts
-    const response = await hubspotClient.crm.contacts.basicApi.getPage(100);
+    const response = await hubspotClient.crmContactsGetPage(100);
 
     const formattedContacts: HubSpotContact[] = response.results.map(
       (contact: HubSpotApiContact) => ({
@@ -140,6 +137,19 @@ export const getHubspotContacts: RouteHandler<{
     await reply.status(200).send(formattedContacts);
   } catch (error) {
     console.error('Error fetching HubSpot contacts:', error);
+
+    if (error instanceof RateLimitError) {
+      await reply
+        .status(429)
+        .header('Retry-After', error.retryAfter.toString())
+        .send({
+          error: 'rate_limit_exceeded',
+          retryAfter: error.retryAfter,
+          message: error.message,
+        });
+      return;
+    }
+
     await reply.status(500).send({ error: 'failed_to_fetch_contacts' });
   }
 };

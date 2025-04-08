@@ -7,6 +7,7 @@ import { listConnections, listIntegrations, getHubSpotContacts } from '../api';
 import { HubSpotTaskForm } from '../components/HubSpotTaskForm';
 import type { Integration, HubSpotContact } from '../types';
 import { cn } from '../utils';
+// import { RateLimitTest } from '../components/RateLimitTest';
 
 export default function IndexPage() {
   const { data: resIntegrations } = useQuery({
@@ -123,6 +124,7 @@ export default function IndexPage() {
             </div>
           </div>
         )}
+        {/* <RateLimitTest /> */}
       </div>
     </div>
   );
