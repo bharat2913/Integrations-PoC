@@ -64,34 +64,6 @@ services:
       networks:
           - nango
 
-  nango-redis:
-      image: redis:7.2.4
-      container_name: nango-redis
-      ports:
-          - '6379:6379'
-      networks:
-          - nango
-  #
-  # Optional dependency
-  # To load elasticsearch, set NANGO_LOGS_ENABLED=true in nango-server and uncomment this dependency
-  # nango-elasticsearch:
-  #     image: elasticsearch:8.13.0
-  #     container_name: nango-elasticsearch
-  #     ulimits:
-  #         memlock:
-  #             soft: -1
-  #             hard: -1
-  #     volumes:
-  #         - elasticsearch-data1:/usr/share/elasticsearch/data
-  #     ports:
-  #         - 9500:9200
-  #         - 9600:9300
-  #     environment:
-  #         - discovery.type=single-node
-  #         - xpack.security.enabled=false
-  #     networks:
-  #         - nango
-
 networks:
     nango:
 
